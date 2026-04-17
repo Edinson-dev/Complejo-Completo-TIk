@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TikDownloader</string>
+    <string name="accessibility_description">Permite detectar URLs de videos en TikTok, Facebook e Instagram para descargar sin marca de agua.</string>
+    <string name="overlay_button_description">Botón de descarga rápida</string>
+    <string name="overlay_no_url_found">No se encontró una URL válida en el portapapeles</string>
+</resources>

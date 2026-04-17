@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer Glow -->
+    <path
+        android:pathData="M54,20 C35.22,20 20,35.22 20,54 C20,72.78 35.22,88 54,88 C72.78,88 88,72.78 88,54 C88,35.22 72.78,20 54,20 Z"
+        android:fillColor="#3369C9D0" />
+
+    <!-- Stylized Cloud/Neo Shape -->
+    <path
+        android:pathData="M70,54 c0,-8.84 -7.16,-16 -16,-16 c-1.42,0 -2.78,0.19 -4.08,0.54 C46.74,34.09 40.91,31 34,31 c-9.39,0 -17,7.61 -17,17 c0,0.41 0.02,0.81 0.05,1.21 C11.39,52.27 7,58.63 7,66 c0,8.84 7.16,16 16,16 h42 c7.73,0 14,-6.27 14,-14 C79,61.16 75.14,55.19 70,54 z"
+        android:fillColor="#EE1D52" />
+
+    <path
+        android:pathData="M65,54 c0,-8.84 -7.16,-16 -16,-16 c-1.42,0 -2.78,0.19 -4.08,0.54 C41.74,34.09 35.91,31 29,31 c-9.39,0 -17,7.61 -17,17 c0,0.41 0.02,0.81 0.05,1.21 C6.39,52.27 2,58.63 2,66 c0,8.84 7.16,16 16,16 h42 c7.73,0 14,-6.27 14,-14 C74,61.16 70.14,55.19 65,54 z"
+        android:fillColor="#69C9D0" />
+
+    <!-- Download Arrow -->
+    <path
+        android:pathData="M54,45 L54,65 M44,55 L54,65 L64,55"
+        android:strokeWidth="5"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+</vector>

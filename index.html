@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikDownloader | Descarga videos sin marca de agua</title>
+    <meta name="description"
+        content="TikDownloader: Descarga videos de TikTok, Instagram y Facebook sin marca de agua a velocidad ultra rápida. La herramienta definitiva para creadores.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Orbitron:wght@600;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Cyberpunk Overlays -->
+    <div class="cyber-overlay">
+        <div class="grid-bg"></div>
+        <div class="scanlines"></div>
+    </div>
+
+    <!-- Floating Download Button -->
+    <a href="tikdownloader.apk" class="fab-download" id="fabDownloadBtn" download>
+        <i data-lucide="download"></i>
+    </a>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1 class="neon-title" data-text="TIK DOWNLOADER">TIK DOWNLOADER</h1>
+            <p class="hero-subtitle">La herramienta definitiva para creadores. Descargas en HD, sin marcas de agua y en
+                segundos.</p>
+            <div class="hero-actions">
+                <a href="tikdownloader.apk" class="btn-primary" id="heroDownloadBtn" download>
+                    <span class="btn-text">DESCARGAR APK <span id="heroVersionLabel">V1.0</span></span>
+                    <div class="btn-glow"></div>
+                </a>
+                <button class="btn-secondary" id="shareBtn">
+                    <i data-lucide="share-2"></i>
+                    <span>COMPARTIR</span>
+                </button>
+            </div>
+            <div class="hero-mockup">
+                <div class="mockup-container scroll-reveal">
+                    <!-- CSS Phone Mockup -->
+                    <div class="app-ui">
+                        <div class="app-header">
+                            <div class="app-pill"></div>
+                        </div>
+                        <div class="app-content">
+                            <div class="app-screen-circle">
+                                <i data-lucide="download-cloud" class="cyan-text"></i>
+                            </div>
+                            <div class="app-input-bar"></div>
+                            <div class="app-button-sim"></div>
+                            <div class="app-grid-sim">
+                                <div class="app-item-sim"></div>
+                                <div class="app-item-sim"></div>
+                                <div class="app-item-sim"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-card scroll-reveal">
+                <h2 class="cyan-text-glow">La Herramienta Definitiva</h2>
+                <p>TikDownloader es una aplicación de alto impacto diseñada para Android que permite a los creadores de
+                    contenido descargar videos de <strong>TikTok, Instagram y Facebook</strong> sin marcas de agua, en
+                    alta definición (HD) y a velocidades ultra rápidas.</p>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <span class="stat-value pink-text-glow">4K</span>
+                        <span class="stat-label">Soporte HD</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value cyan-text-glow">0</span>
+                        <span class="stat-label">Marcas de Agua</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value pink-text-glow">∞</span>
+                        <span class="stat-label">Descargas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof scroll-reveal">
+        <div class="container">
+            <div class="platform-badges">
+                <div class="badge">
+                    <i data-lucide="instagram"></i>
+                    <span>Instagram</span>
+                </div>
+                <div class="badge">
+                    <i data-lucide="facebook"></i>
+                    <span>Facebook</span>
+                </div>
+                <div class="badge">
+                    <i data-lucide="video"></i>
+                    <span>TikTok</span>
+                </div>
+                <div class="badge">
+                    <i data-lucide="twitter"></i>
+                    <span>X / Twitter</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon cyan-glow">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <h3>Velocidad Extrema</h3>
+                    <p>Motor de descarga optimizado para redes 5G y Fibra.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon pink-glow">
+                        <i data-lucide="ghost"></i>
+                    </div>
+                    <h3>Modo Fantasma</h3>
+                    <p>Detecta links automáticamente desde tu portapapeles sin abrir la app.</p>
+                </div>
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-icon cyan-glow">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <h3>Sin Marcas de Agua</h3>
+                    <p>Obtén el video original y limpio para tus reposts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Cómo funciona</h2>
+            <div class="steps-container">
+                <div class="step scroll-reveal">
+                    <div class="step-number">01</div>
+                    <p>Copia el link.</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">02</div>
+                    <p>La app lo detecta (Modo Fantasma).</p>
+                </div>
+                <div class="step scroll-reveal">
+                    <div class="step-number">03</div>
+                    <p>¡Listo! Organizado automáticamente en carpetas por red social.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Preguntas Frecuentes</h2>
+            <div class="faq-container">
+                <div class="faq-item scroll-reveal">
+                    <div class="faq-question">
+                        <span>¿Es TikDownloader gratuito?</span>
+                        <i data-lucide="plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sí, TikDownloader es 100% gratuito. No hay costos ocultos ni suscripciones necesarias para
+                            descargar tus videos favoritos.</p>
+                    </div>
+                </div>
+                <div class="faq-item scroll-reveal">
+                    <div class="faq-question">
+                        <span>¿Es seguro descargar el APK?</span>
+                        <i data-lucide="plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Totalmente. Nuestro APK es verificado periódicamente por herramientas de seguridad líderes
+                            para garantizar que esté libre de malware.</p>
+                    </div>
+                </div>
+                <div class="faq-item scroll-reveal">
+                    <div class="faq-question">
+                        <span>¿Los videos tienen marca de agua?</span>
+                        <i data-lucide="plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. El motor de TikDownloader elimina automáticamente las marcas de agua de TikTok para
+                            entregarte el archivo original en HD.</p>
+                    </div>
+                </div>
+                <div class="faq-item scroll-reveal">
+                    <div class="faq-question">
+                        <span>¿Qué redes sociales soporta?</span>
+                        <i data-lucide="plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Actualmente soportamos TikTok, Instagram, Facebook y seguiremos añadiendo más plataformas
+                            próximamente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <span class="footer-text">by edinson_dev • todos los derechos reservados</span>
+                <i data-lucide="zap" class="footer-icon"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
