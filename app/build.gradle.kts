@@ -13,7 +13,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1"
     }
 
     buildFeatures {
@@ -56,7 +56,7 @@ tasks.register("updateWeb") {
         {
           "latestVersionName": "$vName",
           "latestVersionCode": $vCode,
-          "updateUrl": "https://tik-downloader-one.vercel.app/"
+          "updateUrl": "https://tik-downloader-five.vercel.app/"
         }
         """.trimIndent()
         jsonFile.writeText(jsonContent)
