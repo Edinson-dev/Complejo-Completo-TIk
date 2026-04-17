@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
                     try {
                         val client = OkHttpClient()
                         val request = Request.Builder()
-                            .url("https://tik-downloader-one.vercel.app/version.json")
+                            .url("https://tik-downloader-five.vercel.app/version.json")
                             .build()
                         val response = client.newCall(request).execute()
                         val json = JSONObject(response.body?.string() ?: "")
@@ -267,7 +267,7 @@ class MainActivity : ComponentActivity() {
                                 version = newVersionName,
                                 onDismiss = { showUpdateDialog = false },
                                 onUpdate = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tik-downloader-one.vercel.app/"))
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tik-downloader-five.vercel.app/"))
                                     context.startActivity(intent)
                                 }
                             )
