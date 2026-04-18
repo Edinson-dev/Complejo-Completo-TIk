@@ -47,11 +47,13 @@ import com.example.tikdownloader.utils.OverlayPermissionHelper
 import com.example.tikdownloader.viewmodel.DownloadState
 import com.example.tikdownloader.viewmodel.DownloadViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import android.widget.Toast
 import androidx.compose.ui.viewinterop.AndroidView
@@ -89,40 +91,40 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.2" // Actualizado a 1.1 para que coincida con el servidor
+            val currentVersion = "1.2" // Versión actual
             var showUpdateDialog by remember { mutableStateOf(false) }
             var newVersionName by remember { mutableStateOf("") }
-
-            // Chequeo de actualización automatizado
-            LaunchedEffect(Unit) {
-                delay(2500) // Esperar a que la animación inicial pase
-                val versionEnServidor = withContext(Dispatchers.IO) {
-                    try {
-                        val client = OkHttpClient()
-                        val request = Request.Builder()
-                            .url("https://tik-downloader-five.vercel.app/version.json")
-                            .build()
-                        val response = client.newCall(request).execute()
-                        val json = JSONObject(response.body?.string() ?: "")
-                        json.getString("latestVersionName")
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
-
-                if (versionEnServidor != null && versionEnServidor > currentVersion) {
-                    newVersionName = versionEnServidor
-                    showUpdateDialog = true
-                }
-            }
 
             val lifecycleOwner = LocalLifecycleOwner.current
             var lastProcessedUrl by remember { mutableStateOf("") }
             
-            // Auto-Detection Logic on Resume
+            // Lógica de detección de links y chequeo de actualización al volver a la App
             DisposableEffect(lifecycleOwner) {
                 val observer = LifecycleEventObserver { _, event ->
                     if (event == Lifecycle.Event.ON_RESUME) {
+                        // 1. CHEQUEO DE ACTUALIZACIÓN
+                        lifecycleOwner.lifecycleScope.launch {
+                            val versionEnServidor = withContext(Dispatchers.IO) {
+                                try {
+                                    val client = OkHttpClient()
+                                    val request = Request.Builder()
+                                        .url("https://tik-downloader-five.vercel.app/version.json")
+                                        .build()
+                                    val response = client.newCall(request).execute()
+                                    val json = JSONObject(response.body?.string() ?: "")
+                                    json.getString("latestVersionName")
+                                } catch (e: Exception) {
+                                    null
+                                }
+                            }
+
+                            if (versionEnServidor != null && versionEnServidor > currentVersion) {
+                                newVersionName = versionEnServidor
+                                showUpdateDialog = true
+                            }
+                        }
+
+                        // 2. DETECCIÓN DE PORTAPAPELES
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val item = clipboard.primaryClip?.getItemAt(0)
                         val pasteData = item?.text?.toString() ?: ""
@@ -178,9 +180,7 @@ class MainActivity : ComponentActivity() {
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Spacer(modifier = Modifier.height(40.dp))
-                                    
                                     FuturisticHeader()
-                                    
                                     Spacer(modifier = Modifier.height(30.dp))
 
                                     when (state) {
@@ -234,9 +234,7 @@ class MainActivity : ComponentActivity() {
                                                 )
 
                                                 Spacer(modifier = Modifier.height(30.dp))
-
                                                 SocialBubbles(urlText)
-
                                                 Spacer(modifier = Modifier.height(24.dp))
 
                                                 SettingsSection(
@@ -276,7 +274,7 @@ class MainActivity : ComponentActivity() {
                         // Etiqueta de Versión en la esquina inferior izquierda
                         Text(
                             text = "v$currentVersion",
-                            color = Color.White.copy(alpha = 0.2f), // Muy sutil
+                            color = Color.White.copy(alpha = 0.2f),
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
