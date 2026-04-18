@@ -8,9 +8,10 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# EXCEPCIÓN PARA EL APK DE DISTRIBUCIÓN
 !tikdownloader.apk
