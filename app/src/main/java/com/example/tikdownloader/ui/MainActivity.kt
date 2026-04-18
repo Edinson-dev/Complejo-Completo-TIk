@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.1" // Actualizado a 1.1 para que coincida con el servidor
+            val currentVersion = "1.2" // Actualizado a 1.1 para que coincida con el servidor
             var showUpdateDialog by remember { mutableStateOf(false) }
             var newVersionName by remember { mutableStateOf("") }
 
@@ -272,6 +272,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
+                        // Etiqueta de Versión en la esquina inferior izquierda
+                        Text(
+                            text = "v$currentVersion",
+                            color = Color.White.copy(alpha = 0.2f), // Muy sutil
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(16.dp)
+                        )
                     }
                 }
             }
