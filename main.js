@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('version.json');
             const data = await response.json();
             
-            // Construimos el nombre del archivo basado en tu formato: TikDownloader V.X.X.apk
-            const apkFilename = `TikDownloader V.${data.latestVersionName}.apk`;
+            // Construimos el nombre del archivo FIJO para evitar errores de espacios
+            const apkFilename = `tikdownloader.apk`;
             
             // Update Hero Button
             const heroBtn = document.getElementById('heroDownloadBtn');
