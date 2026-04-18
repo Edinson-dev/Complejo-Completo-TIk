@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.2" // Versión actual
+            val currentVersion = com.example.tikdownloader.BuildConfig.VERSION_NAME
             var showUpdateDialog by remember { mutableStateOf(false) }
             var newVersionName by remember { mutableStateOf("") }
 
