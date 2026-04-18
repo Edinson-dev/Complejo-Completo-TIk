@@ -62,11 +62,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import android.widget.VideoView
 import android.widget.MediaController
 import androidx.activity.compose.BackHandler
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -91,10 +88,8 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = com.example.tikdownloader.BuildConfig.VERSION_NAME
-            var showUpdateDialog by remember { mutableStateOf(false) }
-            var newVersionName by remember { mutableStateOf("") }
-
+            val currentVersion = "1.3" // Versión Manual
+            
             val lifecycleOwner = LocalLifecycleOwner.current
             var lastProcessedUrl by remember { mutableStateOf("") }
             
@@ -102,29 +97,7 @@ class MainActivity : ComponentActivity() {
             DisposableEffect(lifecycleOwner) {
                 val observer = LifecycleEventObserver { _, event ->
                     if (event == Lifecycle.Event.ON_RESUME) {
-                        // 1. CHEQUEO DE ACTUALIZACIÓN
-                        lifecycleOwner.lifecycleScope.launch {
-                            val versionEnServidor = withContext(Dispatchers.IO) {
-                                try {
-                                    val client = OkHttpClient()
-                                    val request = Request.Builder()
-                                        .url("https://tik-downloader-five.vercel.app/version.json")
-                                        .build()
-                                    val response = client.newCall(request).execute()
-                                    val json = JSONObject(response.body?.string() ?: "")
-                                    json.getString("latestVersionName")
-                                } catch (e: Exception) {
-                                    null
-                                }
-                            }
-
-                            if (versionEnServidor != null && versionEnServidor > currentVersion) {
-                                newVersionName = versionEnServidor
-                                showUpdateDialog = true
-                            }
-                        }
-
-                        // 2. DETECCIÓN DE PORTAPAPELES
+                        // 1. DETECCIÓN DE PORTAPAPELES
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val item = clipboard.primaryClip?.getItemAt(0)
                         val pasteData = item?.text?.toString() ?: ""
@@ -259,18 +232,6 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        // Update Dialog Overlay
-                        if (showUpdateDialog) {
-                            UpdateDialog(
-                                version = newVersionName,
-                                onDismiss = { showUpdateDialog = false },
-                                onUpdate = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tik-downloader-five.vercel.app/"))
-                                    context.startActivity(intent)
-                                }
-                            )
-                        }
-
                         // Etiqueta de Versión en la esquina inferior izquierda
                         Text(
                             text = "v$currentVersion",
@@ -282,41 +243,6 @@ class MainActivity : ComponentActivity() {
                                 .padding(16.dp)
                         )
                     }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun UpdateDialog(version: String, onDismiss: () -> Unit, onUpdate: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.8f)).clickable(enabled = false) {},
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(0.85f).border(1.dp, TikTokCyan.copy(alpha = 0.5f), RoundedCornerShape(24.dp)),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF0F0F0F)),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(Icons.Default.SystemUpdate, null, tint = TikTokCyan, modifier = Modifier.size(48.dp))
-                Spacer(modifier = Modifier.height(16.dp))
-                Text("ACTUALIZACIÓN CYBER", color = Color.White, fontWeight = FontWeight.Black, fontSize = 18.sp, letterSpacing = 1.sp)
-                Text("Versión $version disponible", color = TikTokCyan, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(12.dp))
-                Text("Hemos optimizado los motores de extracción para mayor velocidad.", color = Color.Gray, fontSize = 11.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = onUpdate,
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = TikTokCyan),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("ACTUALIZAR AHORA", fontWeight = FontWeight.Black, color = Color.Black)
-                }
-                TextButton(onClick = onDismiss, modifier = Modifier.padding(top = 8.dp)) {
-                    Text("MÁS TARDE", color = Color.DarkGray, fontSize = 10.sp)
                 }
             }
         }
