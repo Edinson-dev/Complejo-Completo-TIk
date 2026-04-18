@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.0" // Versión actual de esta APK
+            val currentVersion = "1.1" // Actualizado a 1.1 para que coincida con el servidor
             var showUpdateDialog by remember { mutableStateOf(false) }
             var newVersionName by remember { mutableStateOf("") }
 
