@@ -61,7 +61,10 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.4" // Versión Manual
+            
+            // Obtener versión real del sistema
+            val packageInfo = remember { context.packageManager.getPackageInfo(context.packageName, 0) }
+            val currentVersionName = packageInfo.versionName ?: "1.0"
             
             val lifecycleOwner = LocalLifecycleOwner.current
             var lastProcessedUrl by remember { mutableStateOf("") }
@@ -212,7 +215,7 @@ class MainActivity : ComponentActivity() {
 
                         // Etiqueta de Versión en la esquina inferior izquierda
                         Text(
-                            text = "v$currentVersion",
+                            text = "v$currentVersionName",
                             color = Color.White.copy(alpha = 0.2f),
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
