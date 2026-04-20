@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            val currentVersion = "1.3" // Versión Manual
+            val currentVersion = "1.4" // Versión Manual
             
             val lifecycleOwner = LocalLifecycleOwner.current
             var lastProcessedUrl by remember { mutableStateOf("") }
