@@ -87,6 +87,39 @@ fun RadarScanner() {
 }
 
 @Composable
+fun CyberTerminal(state: com.example.tikdownloader.viewmodel.DownloadState) {
+    val message = when(state) {
+        is com.example.tikdownloader.viewmodel.DownloadState.Extracting -> "EXTRAYENDO METADATOS..."
+        is com.example.tikdownloader.viewmodel.DownloadState.Downloading -> "INICIANDO TRANSFERENCIA..."
+        else -> "STAND BY..."
+    }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .border(1.dp, TikTokCyan.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
+            .padding(12.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(6.dp)
+                    .background(TikTokCyan, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "> $message",
+                color = TikTokCyan,
+                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                fontSize = 11.sp,
+                letterSpacing = 1.sp
+            )
+        }
+    }
+}
+
+@Composable
 fun UpdateDialog(updateInfo: UpdateInfo, onDismiss: () -> Unit, onUpdate: (String) -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(

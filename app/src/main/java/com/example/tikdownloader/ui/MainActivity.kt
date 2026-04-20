@@ -144,36 +144,28 @@ class MainActivity : ComponentActivity() {
                                                 onReturn = { viewModel.resetState() }
                                             )
                                         }
-                                        is DownloadState.Downloading -> {
+                                        is DownloadState.Downloading, is DownloadState.Extracting -> {
                                             Column(
                                                 modifier = Modifier.fillMaxWidth().padding(top = 40.dp),
                                                 horizontalAlignment = Alignment.CenterHorizontally
                                             ) {
                                                 RadarScanner()
                                                 Spacer(modifier = Modifier.height(24.dp))
+                                                
+                                                // Terminal de Estado Interactiva
+                                                CyberTerminal(state)
+                                                
+                                                Spacer(modifier = Modifier.height(24.dp))
                                                 LinearProgressIndicator(
                                                     modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
                                                     color = TikTokCyan,
                                                     trackColor = Color.White.copy(alpha = 0.1f)
                                                 )
-                                                Text("DESCARGANDO ARCHIVO...", color = Color.Gray, fontSize = 10.sp, modifier = Modifier.padding(top = 8.dp))
                                             }
                                         }
                                         else -> {
                                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                                Button(
-                                                    onClick = { showBrowser = true },
-                                                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                                                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.05f)),
-                                                    shape = RoundedCornerShape(12.dp),
-                                                    border = BorderStroke(1.dp, TikTokCyan.copy(alpha = 0.3f))
-                                                ) {
-                                                    Icon(Icons.Default.Public, null, tint = TikTokCyan, modifier = Modifier.size(18.dp))
-                                                    Spacer(modifier = Modifier.width(8.dp))
-                                                    Text("NAVEGADOR INTELIGENTE", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 11.sp)
-                                                }
-
-                                                Spacer(modifier = Modifier.height(20.dp))
+                                                // Se eliminó el botón del Navegador Inteligente
 
                                                 InteractiveMainCard(
                                                     urlText = urlText,
