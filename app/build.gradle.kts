@@ -12,7 +12,7 @@ android {
         applicationId = "com.example.tikdownloader"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
+        versionCode = 4
         versionName = "1.4"
     }
 
@@ -34,46 +34,52 @@ android {
 tasks.register("updateWeb") {
     group = "publishing"
     description = "Prepara el APK, JSON e Index para la Landing Page"
+    
+    // Asegura que el build termine antes de copiar
     dependsOn("assembleDebug")
     
     doLast {
         val vName = android.defaultConfig.versionName ?: "1.0"
         val vCode = android.defaultConfig.versionCode ?: 1
         
-        // 1. Copiar y renombrar APK a la raíz del proyecto
+        // 1. Localizar el APK (ruta absoluta robusta)
         val apkOrigin = File(layout.buildDirectory.get().asFile, "outputs/apk/debug/app-debug.apk")
         val apkDest = File(project.rootDir, "tikdownloader.apk")
         
         if (apkOrigin.exists()) {
-            apkOrigin.copyTo(apkDest, true)
-            println("✅ APK LISTO: ${apkDest.name}")
+            // Usamos copy de Gradle para garantizar que el archivo se cierre correctamente
+            copy {
+                from(apkOrigin)
+                into(project.rootDir)
+                rename { "tikdownloader.apk" }
+            }
+            println("✅ APK ACTUALIZADO EXITOSAMENTE: ${apkDest.absolutePath} (${apkDest.length() / 1024} KB)")
         } else {
-            throw GradleException("❌ ERROR: No se encontró el APK en ${apkOrigin.absolutePath}")
+            throw GradleException("❌ ERROR: No se encontró el APK. Verifica que la compilación terminó en: ${apkOrigin.absolutePath}")
         }
         
-        // 2. Actualizar version.json
+        // 2. Actualizar version.json con URL completa al APK
         val jsonFile = File(project.rootDir, "version.json")
-        val jsonContent = """
-        {
-          "latestVersionName": "$vName",
-          "latestVersionCode": $vCode,
-          "updateUrl": "https://tik-downloader-five.vercel.app/"
-        }
-        """.trimIndent()
-        jsonFile.writeText(jsonContent)
-        println("✅ version.json actualizado a v$vName")
+        jsonFile.writeText("""
+{
+  "latestVersionName": "$vName",
+  "latestVersionCode": $vCode,
+  "updateUrl": "https://tik-downloader-five.vercel.app/tikdownloader.apk"
+}
+        """.trimIndent())
+        println("✅ version.json sincronizado a v$vName")
         
-        // 3. Actualizar index.html (el label de versión)
+        // 3. Actualizar index.html (label de versión)
         val htmlFile = File(project.rootDir, "index.html")
         if (htmlFile.exists()) {
             var htmlContent = htmlFile.readText()
-            // Reemplaza el contenido de heroVersionLabel
-            htmlContent = htmlContent.replace(Regex("""<span id="heroVersionLabel">V.*?</span>"""), "<span id=\"heroVersionLabel\">V$vName</span>")
-            htmlFile.writeText(htmlContent)
-            println("✅ index.html actualizado con la versión V$vName")
+            val versionRegex = Regex("""(<span id="heroVersionLabel">)(.*?)(</span>)""")
+            if (versionRegex.containsMatchIn(htmlContent)) {
+                htmlContent = versionRegex.replace(htmlContent) { it.groupValues[1] + "V$vName" + it.groupValues[3] }
+                htmlFile.writeText(htmlContent)
+                println("✅ index.html actualizado a V$vName")
+            }
         }
-        
-        println("🚀 ¡Todo listo! Ahora sube tikdownloader.apk, version.json e index.html a Vercel.")
     }
 }
 

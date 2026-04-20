@@ -1,18 +1,18 @@
 package com.example.tikdownloader.ui.components
 
-import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.WifiTethering
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -25,8 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.tikdownloader.ui.theme.TikTokCyan
 import com.example.tikdownloader.ui.theme.TikTokPink
+import com.example.tikdownloader.viewmodel.UpdateInfo
 
 @Composable
 fun FuturisticHeader() {
@@ -81,5 +83,49 @@ fun RadarScanner() {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text("BUSCANDO STREAM HD...", color = TikTokCyan, fontWeight = FontWeight.Black, fontSize = 12.sp)
+    }
+}
+
+@Composable
+fun UpdateDialog(updateInfo: UpdateInfo, onDismiss: () -> Unit, onUpdate: (String) -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = Color(0xFF111111),
+            border = BorderStroke(1.dp, TikTokCyan.copy(alpha = 0.5f))
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(Icons.Default.Bolt, null, tint = TikTokCyan, modifier = Modifier.size(48.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "¡NUEVA VERSIÓN DISPONIBLE!",
+                    color = Color.White,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Versión ${updateInfo.versionName} lista para descargar. Incluye mejoras en la extracción y velocidad.",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = { onUpdate(updateInfo.updateUrl) },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = TikTokCyan),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("ACTUALIZAR AHORA", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+                TextButton(onClick = onDismiss, modifier = Modifier.padding(top = 8.dp)) {
+                    Text("MÁS TARDE", color = Color.Gray, fontSize = 12.sp)
+                }
+            }
+        }
     }
 }

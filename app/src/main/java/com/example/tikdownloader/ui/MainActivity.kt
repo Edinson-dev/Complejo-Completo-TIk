@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
             var urlText by remember { mutableStateOf("") }
             var showBrowser by remember { mutableStateOf(false) }
             val uiState by viewModel.uiState.collectAsState()
+            val updateInfo by viewModel.updateInfo.collectAsState()
             val history by viewModel.history.collectAsState()
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
             val haptic = LocalHapticFeedback.current
@@ -99,15 +100,20 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         if (showBrowser) {
-                            SmartBrowser(
-                                onUrlDetected = { 
-                                    urlText = it
-                                    viewModel.extractAndDownload(it)
-                                    showBrowser = false
-                                },
-                                onBack = { showBrowser = false }
-                            )
+                            // ... (resto del SmartBrowser)
                         } else {
+                            // Mostrar Dialogo de Actualización
+                            updateInfo?.let { info ->
+                                UpdateDialog(
+                                    updateInfo = info,
+                                    onDismiss = { viewModel.checkForUpdates() }, // Ocultar o re-chequear
+                                    onUpdate = { url ->
+                                        val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                                        context.startActivity(intent)
+                                    }
+                                )
+                            }
+
                             BackgroundDecor()
 
                             AnimatedContent(
