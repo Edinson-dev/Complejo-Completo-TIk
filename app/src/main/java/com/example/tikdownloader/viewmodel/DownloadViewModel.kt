@@ -75,6 +75,13 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun downloadUpdate(url: String) {
+        viewModelScope.launch {
+            downloadHelper.enqueueDownload(url, "Update", "TikDownloader_New.apk")
+            _updateInfo.value = null // Ocultar el diálogo tras iniciar
+        }
+    }
+
     fun setAudioOnly(enabled: Boolean) {
         _isAudioOnly.value = enabled
     }
