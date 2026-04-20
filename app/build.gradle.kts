@@ -12,8 +12,8 @@ android {
         applicationId = "com.example.tikdownloader"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.7"
+        versionCode = 1
+        versionName = "1.1"
     }
 
     buildFeatures {

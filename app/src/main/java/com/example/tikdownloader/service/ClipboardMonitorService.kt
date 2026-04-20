@@ -53,6 +53,12 @@ class ClipboardMonitorService : Service() {
             if (videoData != null) {
                 downloadHelper.enqueueDownload(videoData.downloadUrl)
                 updateNotification("✅ Descarga Iniciada", videoData.title)
+                
+                // Limpieza Automática tras descargar
+                val freed = downloadHelper.performSystemCleanup()
+                if (freed > 0) {
+                    android.util.Log.d("GHOST_MODE", "Auto-Limpieza: ${freed}MB liberados tras descarga.")
+                }
             } else {
                 updateNotification("❌ Error", "No se pudo extraer el video")
             }

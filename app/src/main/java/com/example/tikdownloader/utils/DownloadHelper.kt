@@ -48,9 +48,75 @@ class DownloadHelper(private val context: Context) {
         val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = dm.enqueue(request)
         
-        // Opcional: Podrías monitorear el progreso aquí o simplemente confiar en DownloadManager
-        // que ya muestra una notificación nativa. Para hacerlo más "Pro", personalizamos la notificación inicial.
-        
         return File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), relativePath).absolutePath
+    }
+
+    /**
+     * PURGA DE SISTEMA PRO: Limpieza multifuncional profunda con logs de auditoría
+     * @return Cantidad de MB liberados
+     */
+    fun performSystemCleanup(): Long {
+        var totalBytesFreed: Long = 0
+        android.util.Log.d("CLEANER", "--- INICIANDO PURGA DE SISTEMA ---")
+
+        // 1. Limpiar Caché Interna y de UI
+        val internalCache = deleteDirContent(context.cacheDir)
+        totalBytesFreed += internalCache
+        android.util.Log.d("CLEANER", "Caché Interna: ${internalCache / 1024} KB liberados")
+
+        // 2. Limpieza de Descargas Basura (APKs, Tmp, Logs)
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        downloadsDir?.listFiles()?.forEach { file ->
+            val name = file.name.lowercase()
+            if (name.endsWith(".apk") || name.endsWith(".tmp") || name.endsWith(".log") || name.contains("temp_")) {
+                val size = file.length()
+                if (file.delete()) {
+                    totalBytesFreed += size
+                    android.util.Log.d("CLEANER", "Eliminado archivo basura: ${file.name} (${size / 1024} KB)")
+                }
+            }
+        }
+
+        // 3. Limpieza de Carpetas Vacías
+        val appDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "TikDownloader")
+        if (appDir.exists()) {
+            val emptyDirFreed = cleanEmptyDirectories(appDir)
+            totalBytesFreed += emptyDirFreed
+        }
+
+        android.util.Log.d("CLEANER", "--- PURGA COMPLETADA: ${totalBytesFreed / (1024 * 1024)} MB TOTALES ---")
+        
+        System.gc()
+        return totalBytesFreed / (1024 * 1024)
+    }
+
+    private fun cleanEmptyDirectories(directory: File): Long {
+        var freed: Long = 0
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                freed += cleanEmptyDirectories(file)
+                if (file.listFiles()?.isEmpty() == true) {
+                    file.delete()
+                }
+            }
+        }
+        return freed
+    }
+
+    private fun deleteDirContent(dir: File?): Long {
+        var bytes: Long = 0
+        if (dir != null && dir.isDirectory) {
+            dir.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    bytes += deleteDirContent(file)
+                } else {
+                    val size = file.length()
+                    if (file.delete()) {
+                        bytes += size
+                    }
+                }
+            }
+        }
+        return bytes
     }
 }

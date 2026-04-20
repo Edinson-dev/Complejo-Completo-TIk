@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    android:background="@drawable/widget_background">
+
+    <!-- TOP SECTION: HEADER & STATUS -->
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/widget_logo"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_bolt_cyan"
+            android:padding="4dp"
+            android:background="@drawable/btn_neon_circle"
+            android:backgroundTint="#1A00F2EA" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CORE.SYSTEM_V1.7"
+                android:textColor="#00F2EA"
+                android:fontFamily="monospace"
+                android:textStyle="bold"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STATUS: INFILTRATING..."
+                android:textColor="#FF0050"
+                android:fontFamily="monospace"
+                android:textSize="7sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="23:59:00"
+            android:textColor="#4D00F2EA"
+            android:fontFamily="monospace"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+    <!-- CENTER SECTION: SYSTEM MONITOR -->
+    <LinearLayout
+        android:id="@+id/stats_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_bar"
+        android:layout_marginTop="8dp"
+        android:background="#0DFFFFFF"
+        android:padding="6dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/disk_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="> DISK_USAGE_ANALYTICS"
+            android:textColor="#88FFFFFF"
+            android:fontFamily="monospace"
+            android:textSize="7sp" />
+
+        <ProgressBar
+            android:id="@+id/disk_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:progress="65"
+            android:progressTint="#00F2EA"
+            android:layout_marginTop="2dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DL_CACHE: 1.2GB"
+                android:textColor="#4DFFFFFF"
+                android:fontFamily="monospace"
+                android:textSize="7sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SECURE_TUNNEL: ON"
+                android:textColor="#00FF00"
+                android:fontFamily="monospace"
+                android:textSize="7sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- BOTTOM SECTION: ACTIONS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stats_area"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[ AUTO_DETECT_ENABLED ]"
+                android:textColor="#00F2EA"
+                android:fontFamily="monospace"
+                android:textSize="8sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="READY TO SNIFF PORTBOARD"
+                android:textColor="#4DFFFFFF"
+                android:fontFamily="monospace"
+                android:textSize="7sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_clean_system"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_delete"
+            android:background="@drawable/btn_neon_circle"
+            android:backgroundTint="#1AFF0050"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:tint="#FF0050" />
+
+        <ImageButton
+            android:id="@+id/btn_quick_download"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/stat_sys_download"
+            android:background="@drawable/btn_neon_circle"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:tint="#00F2EA" />
+    </LinearLayout>
+
+</RelativeLayout>

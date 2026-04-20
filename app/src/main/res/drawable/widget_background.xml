@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fondo Base -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#F2050505"
+                android:endColor="#F20A0A0A"
+                android:angle="45" />
+            <corners android:radius="20dp" />
+            <stroke
+                android:width="1.5dp"
+                android:color="#00F2EA" />
+        </shape>
+    </item>
+
+    <!-- Efecto de Brillo en la esquina -->
+    <item android:top="2dp" android:left="2dp">
+        <shape>
+            <gradient
+                android:type="radial"
+                android:gradientRadius="150dp"
+                android:startColor="#1A00F2EA"
+                android:endColor="#00000000"
+                android:centerX="0"
+                android:centerY="0" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+</layer-list>

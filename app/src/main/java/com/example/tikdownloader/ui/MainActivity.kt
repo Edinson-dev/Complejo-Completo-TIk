@@ -111,8 +111,7 @@ class MainActivity : ComponentActivity() {
                                     updateInfo = info,
                                     onDismiss = { viewModel.checkForUpdates() }, // Ocultar o re-chequear
                                     onUpdate = { url ->
-                                        val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
-                                        context.startActivity(intent)
+                                        viewModel.downloadUpdate(url)
                                     }
                                 )
                             }
