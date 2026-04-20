@@ -1,0 +1,235 @@
+package com.example.tikdownloader.ui.components
+
+import android.content.Intent
+import android.os.Environment
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
+import coil.compose.AsyncImage
+import com.example.tikdownloader.extractor.VideoData
+import com.example.tikdownloader.ui.theme.TikTokCyan
+import com.example.tikdownloader.ui.theme.TikTokPink
+import com.example.tikdownloader.viewmodel.DownloadState
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.MediaController
+import android.widget.VideoView
+import androidx.compose.animation.animateContentSize
+
+@Composable
+fun InteractiveMainCard(urlText: String, onUrlChange: (String) -> Unit, uiState: DownloadState, onDownload: () -> Unit) {
+    val isExtracting = uiState is DownloadState.Extracting
+    val infiniteTransition = rememberInfiniteTransition(label = "cardGlow")
+    val borderGlow by infiniteTransition.animateColor(
+        initialValue = TikTokCyan.copy(alpha = 0.4f),
+        targetValue = TikTokPink.copy(alpha = 0.4f),
+        animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse),
+        label = "borderGlow"
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0A0A0A)),
+        border = BorderStroke(1.5.dp, borderGlow)
+    ) {
+        Column(modifier = Modifier.padding(24.dp).animateContentSize()) {
+            if (isExtracting) {
+                RadarScanner()
+            } else {
+                Text("SISTEMA DE EXTRACCIÓN", color = Color.White.copy(alpha = 0.7f), fontSize = 9.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp)
+                Spacer(modifier = Modifier.height(16.dp))
+                TextField(
+                    value = urlText,
+                    onValueChange = onUrlChange,
+                    placeholder = { Text("Pega el enlace aquí...", color = Color.DarkGray) },
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color.Black),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = TikTokCyan,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedTextColor = Color.White
+                    ),
+                    singleLine = true
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (urlText.isBlank()) Brush.linearGradient(listOf(Color(0xFF1A1A1A), Color(0xFF1A1A1A))) else Brush.linearGradient(listOf(TikTokCyan, TikTokPink)))
+                        .clickable(enabled = urlText.isNotBlank()) { onDownload() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("INICIAR DESCARGA ULTRA", color = if (urlText.isBlank()) Color.Gray else Color.White, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SmartBrowser(onUrlDetected: (String) -> Unit, onBack: () -> Unit) {
+    BackHandler { onBack() }
+    var webView: WebView? by remember { mutableStateOf(null) }
+    
+    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
+            Text("SMART BROWSER", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text("TIK/FB/IG", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
+        }
+        AndroidView(
+            modifier = Modifier.weight(1f), 
+            factory = { context -> 
+                WebView(context).apply { 
+                    settings.javaScriptEnabled = true
+                    webViewClient = WebViewClient()
+                    loadUrl("https://www.google.com")
+                    webView = this
+                } 
+            }
+        )
+        Button(
+            onClick = { 
+                webView?.url?.let { currentUrl ->
+                    onUrlDetected(currentUrl)
+                }
+            }, 
+            modifier = Modifier.fillMaxWidth().padding(16.dp).height(56.dp), 
+            colors = ButtonDefaults.buttonColors(containerColor = TikTokPink), 
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text("CAPTURAR Y DESCARGAR", fontWeight = FontWeight.Black)
+        }
+    }
+}
+
+@Composable
+fun SocialBubbles(currentUrl: String) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+        SocialBubble("TikTok", TikTokCyan, currentUrl.contains("tiktok"))
+        SocialBubble("Insta", TikTokPink, currentUrl.contains("instagram"))
+        SocialBubble("FB", Color(0xFF1877F2), currentUrl.contains("facebook") || currentUrl.contains("fb"))
+    }
+}
+
+@Composable
+fun SocialBubble(label: String, color: Color, isActive: Boolean) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(modifier = Modifier.size(46.dp).background(color.copy(alpha = if (isActive) 0.2f else 0.05f), CircleShape).border(1.dp, color.copy(alpha = if (isActive) 1f else 0.2f), CircleShape), contentAlignment = Alignment.Center) {
+            Text(label.take(1), color = color, fontWeight = FontWeight.Bold)
+        }
+        Text(label, color = color.copy(alpha = if (isActive) 1f else 0.4f), fontSize = 10.sp, modifier = Modifier.padding(top = 4.dp))
+    }
+}
+
+@Composable
+fun HistorySection(history: List<VideoData>, onItemClick: (VideoData) -> Unit, onClearHistory: () -> Unit, onRemoveItem: (VideoData) -> Unit) {
+    val haptic = LocalHapticFeedback.current
+    Column(modifier = Modifier.fillMaxWidth().animateContentSize()) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("HISTORIAL DE DESCARGAS", color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
+            TextButton(onClick = onClearHistory) { Text("LIMPIAR TODO", color = TikTokPink, fontSize = 10.sp, fontWeight = FontWeight.Bold) }
+        }
+        LazyRow(contentPadding = PaddingValues(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            items(history) { video ->
+                Box(modifier = Modifier.size(height = 110.dp, width = 85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF0F0F0F)).border(1.dp, when(video.source) { "TikTok" -> TikTokCyan.copy(alpha = 0.3f); "Facebook" -> Color(0xFF1877F2).copy(alpha = 0.3f); "Instagram" -> TikTokPink.copy(alpha = 0.3f); else -> Color.White.copy(alpha = 0.1f) }, RoundedCornerShape(16.dp)).clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onItemClick(video) }) {
+                    AsyncImage(model = video.coverUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop, alpha = 0.7f)
+                    Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)))).padding(vertical = 4.dp), contentAlignment = Alignment.Center) { Text(video.source.uppercase(), color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Black) }
+                    Box(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(18.dp).background(Color.Black.copy(alpha = 0.6f), CircleShape).clickable { onRemoveItem(video) }, contentAlignment = Alignment.Center) { Icon(Icons.Default.Close, null, tint = Color.White, modifier = Modifier.size(10.dp)) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
+    val context = LocalContext.current
+    val videoFile = remember(videoData) { 
+        val moviesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+        moviesDir.listFiles()?.filter { it.extension == "mp4" }?.maxByOrNull { it.lastModified() } 
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(modifier = Modifier.size(260.dp).padding(10.dp)) {
+            Box(modifier = Modifier.fillMaxSize().border(2.dp, Brush.linearGradient(listOf(TikTokCyan, TikTokPink)), RoundedCornerShape(20.dp)))
+            if (videoFile != null && videoFile.exists()) { 
+                VideoPlayer(videoPath = videoFile.absolutePath, modifier = Modifier.padding(6.dp)) 
+            } else { 
+                AsyncImage(model = videoData.coverUrl, contentDescription = null, modifier = Modifier.fillMaxSize().padding(6.dp).clip(RoundedCornerShape(16.dp)), contentScale = ContentScale.Crop) 
+            }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text("¡DESCARGA EXITOSA!", color = TikTokCyan, fontWeight = FontWeight.Black, fontSize = 18.sp)
+        Text(videoData.title, color = Color.Gray, fontSize = 11.sp, maxLines = 1, modifier = Modifier.padding(horizontal = 20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(onClick = onReturn, modifier = Modifier.weight(1f).height(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A1A1A)), shape = RoundedCornerShape(12.dp)) { Text("NUEVO") }
+            Button(
+                onClick = { 
+                    if (videoFile != null) { 
+                        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", videoFile)
+                        val intent = Intent(Intent.ACTION_SEND).apply { 
+                            type = "video/mp4"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) 
+                        }
+                        context.startActivity(Intent.createChooser(intent, "Compartir video")) 
+                    } 
+                }, 
+                modifier = Modifier.weight(1f).height(50.dp), 
+                colors = ButtonDefaults.buttonColors(containerColor = TikTokPink), 
+                shape = RoundedCornerShape(12.dp)
+            ) { 
+                Icon(Icons.Default.Share, null)
+                Spacer(Modifier.width(8.dp))
+                Text("ENVIAR") 
+            }
+        }
+    }
+}
+
+@Composable
+fun VideoPlayer(videoPath: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        factory = { ctx -> 
+            VideoView(ctx).apply { 
+                setVideoPath(videoPath)
+                val controller = MediaController(ctx)
+                controller.setAnchorView(this)
+                setMediaController(controller)
+                setOnPreparedListener { it.isLooping = true } 
+            } 
+        }, 
+        modifier = modifier.fillMaxSize().clip(RoundedCornerShape(16.dp))
+    )
+}
