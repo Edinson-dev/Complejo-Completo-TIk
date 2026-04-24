@@ -1,6 +1,7 @@
 package com.example.tikdownloader.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,9 +32,13 @@ data class UpdateInfo(
 
 class DownloadViewModel(application: Application) : AndroidViewModel(application) {
     private val downloadHelper = DownloadHelper(application)
+    private val prefs = application.getSharedPreferences("tik_prefs", Context.MODE_PRIVATE)
     
     private val _uiState = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val uiState: StateFlow<DownloadState> = _uiState
+
+    private val _isAdsEnabled = MutableStateFlow(prefs.getBoolean("ads_enabled", true))
+    val isAdsEnabled: StateFlow<Boolean> = _isAdsEnabled
 
     private val _history = MutableStateFlow<List<VideoData>>(emptyList())
     val history: StateFlow<List<VideoData>> = _history
@@ -127,6 +132,13 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
     
     fun resetState() {
         _uiState.value = DownloadState.Idle
+    }
+
+    fun disableAds() {
+        viewModelScope.launch {
+            prefs.edit().putBoolean("ads_enabled", false).apply()
+            _isAdsEnabled.value = false
+        }
     }
 
     fun clearHistory() {
