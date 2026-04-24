@@ -105,7 +105,7 @@ fun SmartBrowser(onUrlDetected: (String) -> Unit, onBack: () -> Unit) {
         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
             Text("SMART BROWSER", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-            Text("TIK/FB/IG", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
+            Text("PRO MODE", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
         }
         AndroidView(
             modifier = Modifier.weight(1f), 
@@ -135,10 +135,9 @@ fun SmartBrowser(onUrlDetected: (String) -> Unit, onBack: () -> Unit) {
 
 @Composable
 fun SocialBubbles(currentUrl: String) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
         SocialBubble("TikTok", TikTokCyan, currentUrl.contains("tiktok"))
-        SocialBubble("Insta", TikTokPink, currentUrl.contains("instagram"))
-        SocialBubble("FB", Color(0xFF1877F2), currentUrl.contains("facebook") || currentUrl.contains("fb"))
+        SocialBubble("Instagram", TikTokPink, currentUrl.contains("instagram"))
     }
 }
 
@@ -162,7 +161,7 @@ fun HistorySection(history: List<VideoData>, onItemClick: (VideoData) -> Unit, o
         }
         LazyRow(contentPadding = PaddingValues(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             items(history) { video ->
-                Box(modifier = Modifier.size(height = 110.dp, width = 85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF0F0F0F)).border(1.dp, when(video.source) { "TikTok" -> TikTokCyan.copy(alpha = 0.3f); "Facebook" -> Color(0xFF1877F2).copy(alpha = 0.3f); "Instagram" -> TikTokPink.copy(alpha = 0.3f); else -> Color.White.copy(alpha = 0.1f) }, RoundedCornerShape(16.dp)).clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onItemClick(video) }) {
+                Box(modifier = Modifier.size(height = 110.dp, width = 85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF0F0F0F)).border(1.dp, when(video.source) { "TikTok" -> TikTokCyan.copy(alpha = 0.3f); "Instagram" -> TikTokPink.copy(alpha = 0.3f); else -> Color.White.copy(alpha = 0.1f) }, RoundedCornerShape(16.dp)).clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onItemClick(video) }) {
                     AsyncImage(model = video.coverUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop, alpha = 0.7f)
                     Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)))).padding(vertical = 4.dp), contentAlignment = Alignment.Center) { Text(video.source.uppercase(), color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Black) }
                     Box(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(18.dp).background(Color.Black.copy(alpha = 0.6f), CircleShape).clickable { onRemoveItem(video) }, contentAlignment = Alignment.Center) { Icon(Icons.Default.Close, null, tint = Color.White, modifier = Modifier.size(10.dp)) }

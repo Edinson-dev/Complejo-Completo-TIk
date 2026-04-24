@@ -44,6 +44,12 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
     private val _updateInfo = MutableStateFlow<UpdateInfo?>(null)
     val updateInfo: StateFlow<UpdateInfo?> = _updateInfo
 
+    private val _totalSavedMB = MutableStateFlow(0L)
+    val totalSavedMB: StateFlow<Long> = _totalSavedMB
+
+    private val _totalDownloads = MutableStateFlow(0)
+    val totalDownloads: StateFlow<Int> = _totalDownloads
+
     init {
         checkForUpdates()
     }
@@ -59,10 +65,10 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
                 val latestName = json.getString("latestVersionName")
                 val url = json.getString("updateUrl")
                 
-                // Obtenemos la versión actual de la App
                 val currentCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     getApplication<Application>().packageManager.getPackageInfo(getApplication<Application>().packageName, 0).longVersionCode.toInt()
                 } else {
+                    @Suppress("DEPRECATION")
                     getApplication<Application>().packageManager.getPackageInfo(getApplication<Application>().packageName, 0).versionCode
                 }
 
@@ -75,10 +81,17 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun performCleanup() {
+        viewModelScope.launch {
+            val freed = downloadHelper.performSystemCleanup()
+            _totalSavedMB.value += freed
+        }
+    }
+
     fun downloadUpdate(url: String) {
         viewModelScope.launch {
             downloadHelper.enqueueDownload(url, "Update", "TikDownloader_New.apk")
-            _updateInfo.value = null // Ocultar el diálogo tras iniciar
+            _updateInfo.value = null
         }
     }
 
@@ -98,15 +111,16 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
                         url = videoData.downloadUrl,
                         source = videoData.source
                     )
+                    _totalDownloads.value += 1
                     _uiState.value = DownloadState.Success(videoData)
                     if (!_history.value.any { it.downloadUrl == videoData.downloadUrl }) {
                         _history.value = (listOf(videoData) + _history.value).take(10)
                     }
                 } else {
-                    _uiState.value = DownloadState.Error("No se pudo extraer el contenido")
+                    _uiState.value = DownloadState.Error("NO SE PUDO EXTRAER: LINK NO VÁLIDO O PROTEGIDO")
                 }
             } catch (e: Exception) {
-                _uiState.value = DownloadState.Error(e.message ?: "Error desconocido")
+                _uiState.value = DownloadState.Error("FALLO DE CONEXIÓN: VERIFICA TU RED")
             }
         }
     }

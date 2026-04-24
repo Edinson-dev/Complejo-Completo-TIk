@@ -59,6 +59,8 @@ class MainActivity : ComponentActivity() {
             val updateInfo by viewModel.updateInfo.collectAsState()
             val history by viewModel.history.collectAsState()
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
+            val totalSavedMB by viewModel.totalSavedMB.collectAsState()
+            val totalDownloads by viewModel.totalDownloads.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
             
@@ -180,8 +182,18 @@ class MainActivity : ComponentActivity() {
 
                                                 Spacer(modifier = Modifier.height(30.dp))
                                                 SocialBubbles(urlText)
+                                                
                                                 Spacer(modifier = Modifier.height(24.dp))
+                                                CyberStatsPanel(
+                                                    totalSavedMB = totalSavedMB,
+                                                    totalDownloads = totalDownloads,
+                                                    onCleanup = { 
+                                                        viewModel.performCleanup()
+                                                        Toast.makeText(context, "SISTEMA PURGADO CON ÉXITO 🛡️", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                )
 
+                                                Spacer(modifier = Modifier.height(24.dp))
                                                 SettingsSection(
                                                     isAudioOnly = isAudioOnly,
                                                     onAudioToggle = { viewModel.setAudioOnly(it) }

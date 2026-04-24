@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -115,6 +117,56 @@ fun CyberTerminal(state: com.example.tikdownloader.viewmodel.DownloadState) {
                 fontSize = 11.sp,
                 letterSpacing = 1.sp
             )
+        }
+    }
+}
+
+@Composable
+fun CyberStatsPanel(totalSavedMB: Long, totalDownloads: Int, onCleanup: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Reverse),
+        label = "pulseAlpha"
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0D0D0D)),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.05f))
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text("MEMORIA PURGADA", color = Color.Gray, fontSize = 8.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                Text("${totalSavedMB}MB", color = TikTokCyan, fontSize = 20.sp, fontWeight = FontWeight.Black)
+            }
+            
+            Column {
+                Text("EXTRACCIONES", color = Color.Gray, fontSize = 8.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                Text("$totalDownloads", color = TikTokPink, fontSize = 20.sp, fontWeight = FontWeight.Black)
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Box(modifier = Modifier.size(8.dp).background(Color(0xFF00FF41).copy(alpha = pulseAlpha), CircleShape))
+                Text("EN LÍNEA", color = Color(0xFF00FF41), fontSize = 8.sp, fontWeight = FontWeight.Black)
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.Red.copy(alpha = 0.1f))
+                        .border(1.dp, Color.Red.copy(alpha = 0.3f), RoundedCornerShape(6.dp))
+                        .clickable { onCleanup() }
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text("PURGAR", color = Color.Red, fontSize = 8.sp, fontWeight = FontWeight.Black)
+                }
+            }
         }
     }
 }
