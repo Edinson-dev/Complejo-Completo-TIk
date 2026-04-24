@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.google.android.gms.ads.MobileAds
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -47,9 +46,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Inicializar Motor de Anuncios
-        MobileAds.initialize(this) {}
-
         // Forzar Modo Fantasma siempre encendido
         val ghostIntent = Intent(this, com.example.tikdownloader.service.ClipboardMonitorService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -65,13 +61,10 @@ class MainActivity : ComponentActivity() {
             val updateInfo by viewModel.updateInfo.collectAsState()
             val history by viewModel.history.collectAsState()
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
-            val isAdsEnabled by viewModel.isAdsEnabled.collectAsState()
             val totalSavedMB by viewModel.totalSavedMB.collectAsState()
             val totalDownloads by viewModel.totalDownloads.collectAsState()
             val haptic = LocalHapticFeedback.current
             val context = LocalContext.current
-            
-            var showPaymentDialog by remember { mutableStateOf(false) }
             
             // Obtener versión real del sistema
             val packageInfo = remember { context.packageManager.getPackageInfo(context.packageName, 0) }
@@ -149,13 +142,6 @@ class MainActivity : ComponentActivity() {
 
                                     when (state) {
                                         is DownloadState.Success -> {
-                                            // Lanzar anuncio solo si están habilitados
-                                            LaunchedEffect(Unit) {
-                                                if (isAdsEnabled) {
-                                                    showInterstitial(context as Activity)
-                                                }
-                                            }
-                                            
                                             TransferSuccessView(
                                                 videoData = state.videoData,
                                                 onReturn = { viewModel.resetState() }
@@ -209,14 +195,6 @@ class MainActivity : ComponentActivity() {
                                                     }
                                                 )
 
-                                                // Botón de Pago Élite (Visible siempre para pruebas o si anuncios están activos)
-                                                Spacer(modifier = Modifier.height(24.dp))
-                                                PremiumOfferButton(
-                                                    onClick = {
-                                                        showPaymentDialog = true
-                                                    }
-                                                )
-
                                                 Spacer(modifier = Modifier.height(24.dp))
                                                 SettingsSection(
                                                     isAudioOnly = isAudioOnly,
@@ -248,28 +226,8 @@ class MainActivity : ComponentActivity() {
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
-                                .padding(start = 16.dp, bottom = 76.dp) // Subido para no tapar el banner
+                                .padding(start = 16.dp, bottom = 24.dp)
                         )
-
-                        if (showPaymentDialog) {
-                            CyberPaymentDialog(
-                                onDismiss = { showPaymentDialog = false },
-                                onConfirm = {
-                                    viewModel.disableAds()
-                                    showPaymentDialog = false
-                                    Toast.makeText(context, "VERIFICANDO PAGO... ACCESO ÉLITE CONCEDIDO 🛡️", Toast.LENGTH_LONG).show()
-                                }
-                            )
-                        }
-
-                        // BANNER DE ANUNCIOS CYBERPUNK (Solo si están habilitados)
-                        if (isAdsEnabled) {
-                            CyberBannerAd(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .fillMaxWidth()
-                            )
-                        }
                     }
                 }
             }

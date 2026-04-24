@@ -25,41 +25,32 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.tikdownloader.ui.theme.TikTokCyan
 import com.example.tikdownloader.ui.theme.TikTokPink
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+// Importaciones de anuncios comentadas para evitar errores de compilación
+// import com.google.android.gms.ads.*
 
 @Composable
 fun CyberBannerAd(modifier: Modifier = Modifier) {
+    // Comentado para evitar errores sin la librería de Google Ads
+    /*
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
             .background(Color.Black)
-            .padding(top = 1.dp) // Espacio para el borde neón
+            .padding(top = 1.dp)
     ) {
-        // Línea Neón Superior
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(TikTokCyan.copy(alpha = 0.5f))
-        )
-
         AndroidView(
             modifier = Modifier.align(Alignment.Center),
             factory = { context ->
                 AdView(context).apply {
                     setAdSize(AdSize.BANNER)
-                    // ID de prueba de Google
                     adUnitId = "ca-app-pub-3940256099942544/6300978111"
                     loadAd(AdRequest.Builder().build())
                 }
             }
         )
     }
+    */
 }
 
 @Composable
@@ -68,10 +59,10 @@ fun PremiumOfferButton(onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
-            .height(60.dp) // Un poco más alto
+            .height(60.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(TikTokPink.copy(alpha = 0.15f)) // Más visible
-            .border(2.dp, TikTokPink, RoundedCornerShape(16.dp)) // Borde más grueso
+            .background(TikTokPink.copy(alpha = 0.15f))
+            .border(2.dp, TikTokPink, RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.CenterStart
@@ -90,7 +81,7 @@ fun PremiumOfferButton(onClick: () -> Unit) {
                 Icon(
                     imageVector = Icons.Default.WorkspacePremium,
                     contentDescription = "Premium",
-                    tint = Color.Black, // Icono negro sobre fondo rosa
+                    tint = Color.Black,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -99,13 +90,13 @@ fun PremiumOfferButton(onClick: () -> Unit) {
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    "SISTEMA ÉLITE ACTIVADO",
+                    "SISTEMA ÉLITE",
                     color = Color.White,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Black
                 )
                 Text(
-                    "ELIMINAR ANUNCIOS POR $4.000 COP",
+                    "APOYA EL PROYECTO",
                     color = TikTokPink,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
@@ -128,7 +119,7 @@ fun CyberPaymentDialog(
     onConfirm: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val nequiNumber = "300 000 0000" // 👈 CAMBIA ESTO POR TU NÚMERO REAL
+    val nequiNumber = "300 000 0000"
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -146,7 +137,7 @@ fun CyberPaymentDialog(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    "PASARELA DE PAGO ÉLITE",
+                    "PASARELA DE APOYO",
                     color = Color.White,
                     fontWeight = FontWeight.Black,
                     fontSize = 18.sp
@@ -156,7 +147,7 @@ fun CyberPaymentDialog(
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    "Para eliminar los anuncios permanentemente, transfiere $4.000 COP a través de Nequi:",
+                    "Si te gusta la app, puedes apoyarme a través de Nequi:",
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 14.sp,
                     lineHeight = 20.sp
@@ -164,7 +155,6 @@ fun CyberPaymentDialog(
                 
                 Spacer(modifier = Modifier.height(20.dp))
                 
-                // Caja de número Nequi
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -188,15 +178,6 @@ fun CyberPaymentDialog(
                         Icon(imageVector = Icons.Default.ContentCopy, contentDescription = null, tint = Color.White.copy(alpha = 0.5f))
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(15.dp))
-                
-                Text(
-                    "Una vez realizada la transferencia, pulsa el botón de abajo para activar tu licencia.",
-                    color = Color.White.copy(alpha = 0.5f),
-                    fontSize = 11.sp,
-                    lineHeight = 16.sp
-                )
             }
         },
         confirmButton = {
@@ -206,33 +187,12 @@ fun CyberPaymentDialog(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("VERIFICAR TRANSACCIÓN", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("CERRAR", color = Color.Black, fontWeight = FontWeight.Bold)
             }
-        },
-        dismissButton = {
-            Text(
-                "CANCELAR",
-                color = Color.White.copy(alpha = 0.3f),
-                modifier = Modifier
-                    .clickable { onDismiss() }
-                    .padding(8.dp),
-                fontSize = 12.sp
-            )
         }
     )
 }
 
-// Lógica para cargar y mostrar el anuncio Intersticial
 fun showInterstitial(activity: Activity) {
-    val adRequest = AdRequest.Builder().build()
-    InterstitialAd.load(
-        activity,
-        "ca-app-pub-3940256099942544/1033173712", // ID de prueba
-        adRequest,
-        object : InterstitialAdLoadCallback() {
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                interstitialAd.show(activity)
-            }
-        }
-    )
+    // Comentado para evitar errores sin la librería de Google Ads
 }

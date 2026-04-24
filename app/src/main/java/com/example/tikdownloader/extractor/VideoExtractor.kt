@@ -14,7 +14,10 @@ data class VideoData(
     val coverUrl: String,
     val title: String,
     val source: String,
-    val isAudioOnly: Boolean = false
+    val isAudioOnly: Boolean = false,
+    val authorName: String = "",
+    val authorNickname: String = "",
+    val authorAvatar: String = ""
 )
 
 object VideoExtractor {
@@ -52,12 +55,16 @@ object VideoExtractor {
             val json = JSONObject(response.body?.string() ?: "")
             if (json.getInt("code") == 0) {
                 val data = json.getJSONObject("data")
+                val author = data.optJSONObject("author")
                 VideoData(
                     downloadUrl = if (audioOnly) data.optString("music") else data.getString("play"),
                     coverUrl = "https://www.tikwm.com" + data.getString("cover"),
                     title = data.optString("title", "TikTok Video"),
                     source = "TikTok",
-                    isAudioOnly = audioOnly
+                    isAudioOnly = audioOnly,
+                    authorName = author?.optString("unique_id") ?: "",
+                    authorNickname = author?.optString("nickname") ?: "",
+                    authorAvatar = author?.optString("avatar") ?: ""
                 )
             } else null
         } catch (e: Exception) { null }

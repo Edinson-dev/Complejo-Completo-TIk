@@ -190,6 +190,13 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
         Spacer(modifier = Modifier.height(20.dp))
         Text("¡DESCARGA EXITOSA!", color = TikTokCyan, fontWeight = FontWeight.Black, fontSize = 18.sp)
         Text(videoData.title, color = Color.Gray, fontSize = 11.sp, maxLines = 1, modifier = Modifier.padding(horizontal = 20.dp))
+        
+        // Sección de Autor Cyberpunk
+        if (videoData.authorName.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(24.dp))
+            AuthorCard(videoData)
+        }
+
         Spacer(modifier = Modifier.height(30.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(onClick = onReturn, modifier = Modifier.weight(1f).height(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A1A1A)), shape = RoundedCornerShape(12.dp)) { Text("NUEVO") }
@@ -212,6 +219,72 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
                 Icon(Icons.Default.Share, null)
                 Spacer(Modifier.width(8.dp))
                 Text("ENVIAR") 
+            }
+        }
+    }
+}
+
+@Composable
+fun AuthorCard(videoData: VideoData) {
+    val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White.copy(alpha = 0.03f))
+            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
+            .clickable {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://www.tiktok.com/@${videoData.authorName}"))
+                context.startActivity(intent)
+            }
+            .padding(16.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Avatar con efecto neón
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .border(2.dp, TikTokCyan, CircleShape)
+                    .padding(2.dp)
+                    .clip(CircleShape)
+            ) {
+                AsyncImage(
+                    model = videoData.authorAvatar,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = videoData.authorNickname.ifEmpty { "Creador" },
+                    color = Color.White,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "@${videoData.authorName}",
+                    color = TikTokCyan,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            
+            // Botón Explorar
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(TikTokCyan.copy(alpha = 0.1f))
+                    .border(1.dp, TikTokCyan.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            ) {
+                Text("VER MÁS", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
             }
         }
     }

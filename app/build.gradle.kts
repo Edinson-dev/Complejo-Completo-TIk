@@ -12,8 +12,8 @@ android {
         applicationId = "com.example.tikdownloader"
         minSdk = 26
         targetSdk = 34
-        versionCode = 20
-        versionName = "2"
+        versionCode = 21
+        versionName = "2.1"
     }
 
     buildFeatures {
@@ -101,7 +101,6 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp)
     implementation(libs.coil.compose)
-    implementation(libs.google.ads)
 
     // Testing dependencies
     testImplementation("junit:junit:4.13.2")
