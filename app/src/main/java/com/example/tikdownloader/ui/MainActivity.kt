@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
             val updateInfo by viewModel.updateInfo.collectAsState()
             val history by viewModel.history.collectAsState()
             val isAudioOnly by viewModel.isAudioOnly.collectAsState()
+            val isHighQuality by viewModel.isHighQuality.collectAsState()
             val totalSavedMB by viewModel.totalSavedMB.collectAsState()
             val totalDownloads by viewModel.totalDownloads.collectAsState()
             val haptic = LocalHapticFeedback.current
@@ -192,7 +193,9 @@ class MainActivity : ComponentActivity() {
                                                 Spacer(modifier = Modifier.height(24.dp))
                                                 SettingsSection(
                                                     isAudioOnly = isAudioOnly,
-                                                    onAudioToggle = { viewModel.setAudioOnly(it) }
+                                                    onAudioToggle = { viewModel.setAudioOnly(it) },
+                                                    isHighQuality = isHighQuality,
+                                                    onHighQualityToggle = { viewModel.setHighQuality(it) }
                                                 )
 
                                                 if (history.isNotEmpty()) {

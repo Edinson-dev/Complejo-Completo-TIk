@@ -52,18 +52,18 @@ object VideoExtractor {
         }
     }
 
-    suspend fun extract(url: String, audioOnly: Boolean = false): VideoData? = withContext(Dispatchers.IO) {
+    suspend fun extract(url: String, audioOnly: Boolean = false, highQuality: Boolean = true): VideoData? = withContext(Dispatchers.IO) {
         val cleanUrl = url.trim().split("?")[0]
         if (cleanUrl.contains("tiktok.com")) {
-            return@withContext extractTikTok(cleanUrl, audioOnly)
+            return@withContext extractTikTok(cleanUrl, audioOnly, highQuality)
         }
         return@withContext null
     }
 
-    private fun extractTikTok(url: String, audioOnly: Boolean): VideoData? {
+    private fun extractTikTok(url: String, audioOnly: Boolean, highQuality: Boolean): VideoData? {
         try {
             val request = Request.Builder()
-                .url("https://www.tikwm.com/api/?url=$url")
+                .url("https://www.tikwm.com/api/?url=$url&hd=${if (highQuality) 1 else 0}")
                 .header("User-Agent", USER_AGENT)
                 .build()
             val response = client.newCall(request).execute()
@@ -71,8 +71,15 @@ object VideoExtractor {
             if (json.optInt("code") == 0) {
                 val data = json.getJSONObject("data")
                 val author = data.optJSONObject("author")
+
+                val downloadUrl = when {
+                    audioOnly -> data.optString("music")
+                    highQuality && data.has("hdplay") -> data.getString("hdplay")
+                    else -> data.getString("play")
+                }
+
                 return VideoData(
-                    downloadUrl = if (audioOnly) data.optString("music") else data.getString("play"),
+                    downloadUrl = downloadUrl,
                     coverUrl = "https://www.tikwm.com" + data.optString("cover"),
                     title = data.optString("title", "TikTok Video"),
                     source = "TikTok",

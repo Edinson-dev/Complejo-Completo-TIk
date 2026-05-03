@@ -27,7 +27,12 @@ import com.example.tikdownloader.ui.theme.TikTokCyan
 import com.example.tikdownloader.ui.theme.TikTokPink
 
 @Composable
-fun SettingsSection(isAudioOnly: Boolean, onAudioToggle: (Boolean) -> Unit) {
+fun SettingsSection(
+    isAudioOnly: Boolean, 
+    onAudioToggle: (Boolean) -> Unit,
+    isHighQuality: Boolean,
+    onHighQualityToggle: (Boolean) -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color.White.copy(alpha = 0.03f)).padding(16.dp),
@@ -40,6 +45,40 @@ fun SettingsSection(isAudioOnly: Boolean, onAudioToggle: (Boolean) -> Unit) {
                 Text("SOLO AUDIO (MP3)", color = Color.White, fontWeight = FontWeight.Medium, fontSize = 14.sp)
             }
             Switch(checked = isAudioOnly, onCheckedChange = onAudioToggle, colors = SwitchDefaults.colors(checkedThumbColor = TikTokCyan))
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color.White.copy(alpha = 0.03f)).padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = if (isHighQuality) Icons.Default.AutoAwesome else Icons.Default.MusicNote, 
+                    contentDescription = null, 
+                    tint = if (isHighQuality) TikTokCyan else Color.Gray, 
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = if (isHighQuality) "MÁXIMA CALIDAD (HD)" else "AHORRO DE DATOS", 
+                        color = Color.White, 
+                        fontWeight = FontWeight.Medium, 
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = if (isHighQuality) "USA MÁS DATOS" else "DESCARGAS MÁS RÁPIDAS", 
+                        color = if (isHighQuality) TikTokCyan.copy(alpha = 0.7f) else Color.Gray, 
+                        fontSize = 10.sp
+                    )
+                }
+            }
+            Switch(
+                checked = isHighQuality, 
+                onCheckedChange = onHighQualityToggle, 
+                colors = SwitchDefaults.colors(checkedThumbColor = TikTokCyan)
+            )
         }
 
         Row(

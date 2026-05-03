@@ -43,6 +43,9 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
     private val _isAudioOnly = MutableStateFlow(false)
     val isAudioOnly: StateFlow<Boolean> = _isAudioOnly
 
+    private val _isHighQuality = MutableStateFlow(true)
+    val isHighQuality: StateFlow<Boolean> = _isHighQuality
+
     private val _updateInfo = MutableStateFlow<UpdateInfo?>(null)
     val updateInfo: StateFlow<UpdateInfo?> = _updateInfo
 
@@ -101,13 +104,21 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
         _isAudioOnly.value = enabled
     }
 
+    fun setHighQuality(enabled: Boolean) {
+        _isHighQuality.value = enabled
+    }
+
     fun extractAndDownload(url: String) {
         if (url.isBlank()) return
         
         viewModelScope.launch {
             _uiState.value = DownloadState.Extracting
             try {
-                val videoData = VideoExtractor.extract(url, _isAudioOnly.value)
+                val videoData = VideoExtractor.extract(
+                    url = url,
+                    audioOnly = _isAudioOnly.value,
+                    highQuality = _isHighQuality.value
+                )
                 if (videoData != null) {
                     _uiState.value = DownloadState.Downloading
                     downloadHelper.enqueueDownload(
