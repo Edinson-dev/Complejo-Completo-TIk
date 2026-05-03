@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtn.addEventListener('click', async () => {
             const shareData = {
                 title: 'TikDownloader',
-                text: 'Descarga videos de TikTok, Instagram y Facebook sin marca de agua con TikDownloader. ¡Es súper rápido!',
+                text: 'Descarga videos de TikTok sin marca de agua con TikDownloader. ¡Es súper rápido!',
                 url: window.location.href
             };
 

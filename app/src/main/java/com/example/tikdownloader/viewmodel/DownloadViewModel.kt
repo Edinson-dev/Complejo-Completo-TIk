@@ -109,20 +109,23 @@ class DownloadViewModel(application: Application) : AndroidViewModel(application
             try {
                 val videoData = VideoExtractor.extract(url, _isAudioOnly.value)
                 if (videoData != null) {
+                    _uiState.value = DownloadState.Downloading
                     downloadHelper.enqueueDownload(
                         url = videoData.downloadUrl,
                         source = videoData.source
                     )
                     _totalDownloads.value += 1
+                    
                     _uiState.value = DownloadState.Success(videoData)
+                    
                     if (!_history.value.any { it.downloadUrl == videoData.downloadUrl }) {
                         _history.value = (listOf(videoData) + _history.value).take(10)
                     }
                 } else {
-                    _uiState.value = DownloadState.Error("NO SE PUDO EXTRAER: LINK NO VÁLIDO O PROTEGIDO")
+                    _uiState.value = DownloadState.Error("LINK DE TIKTOK NO VÁLIDO")
                 }
             } catch (e: Exception) {
-                _uiState.value = DownloadState.Error("FALLO DE CONEXIÓN: VERIFICA TU RED")
+                _uiState.value = DownloadState.Error("ERROR DE CONEXIÓN")
             }
         }
     }

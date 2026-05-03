@@ -42,10 +42,7 @@ class TikTokAccessibilityService : AccessibilityService() {
         // Paquetes que activan el botón flotante
         val TARGET_PACKAGES = setOf(
             "com.zhiliaoapp.musically",   // TikTok (global)
-            "com.ss.android.ugc.trill",   // TikTok (algunas regiones)
-            "com.instagram.android",       // Instagram
-            "com.facebook.katana",         // Facebook
-            "com.facebook.lite"            // Facebook Lite
+            "com.ss.android.ugc.trill"    // TikTok (algunas regiones)
         )
 
         // Intent action para comunicarse con la UI
@@ -304,18 +301,13 @@ class TikTokAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Valida que el texto del portapapeles sea una URL de TikTok, Instagram o Facebook.
+     * Valida que el texto del portapapeles sea una URL de TikTok.
      */
     private fun isValidVideoUrl(url: String): Boolean {
         val patterns = listOf(
             "tiktok.com",
             "vm.tiktok.com",
-            "vt.tiktok.com",
-            "instagram.com/reel",
-            "instagram.com/p/",
-            "facebook.com/watch",
-            "fb.watch",
-            "facebook.com/reel"
+            "vt.tiktok.com"
         )
         return patterns.any { url.contains(it, ignoreCase = true) }
     }

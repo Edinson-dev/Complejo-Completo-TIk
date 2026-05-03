@@ -18,7 +18,7 @@
         android:id="@+id/et_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Pega el link de TikTok/IG aquí"/>
+        android:hint="Pega el link de TikTok aquí"/>
 
     <Button
         android:id="@+id/btn_download_manual"

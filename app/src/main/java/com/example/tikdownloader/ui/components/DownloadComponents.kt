@@ -63,12 +63,12 @@ fun InteractiveMainCard(urlText: String, onUrlChange: (String) -> Unit, uiState:
             if (isExtracting) {
                 RadarScanner()
             } else {
-                Text("SISTEMA DE EXTRACCIÓN", color = Color.White.copy(alpha = 0.7f), fontSize = 9.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp)
+                Text("TIKTOK DOWNLOADER PRO", color = TikTokCyan, fontSize = 9.sp, fontWeight = FontWeight.Black, letterSpacing = 3.sp)
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = urlText,
                     onValueChange = onUrlChange,
-                    placeholder = { Text("Pega el enlace aquí...", color = Color.DarkGray) },
+                    placeholder = { Text("Pega el enlace de TikTok...", color = Color.DarkGray) },
                     modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Color.Black),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -89,65 +89,10 @@ fun InteractiveMainCard(urlText: String, onUrlChange: (String) -> Unit, uiState:
                         .clickable(enabled = urlText.isNotBlank()) { onDownload() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("INICIAR DESCARGA ULTRA", color = if (urlText.isBlank()) Color.Gray else Color.White, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                    Text("DESCARGAR VIDEO", color = if (urlText.isBlank()) Color.Gray else Color.White, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun SmartBrowser(onUrlDetected: (String) -> Unit, onBack: () -> Unit) {
-    BackHandler { onBack() }
-    var webView: WebView? by remember { mutableStateOf(null) }
-    
-    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-        Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
-            Text("SMART BROWSER", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-            Text("PRO MODE", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
-        }
-        AndroidView(
-            modifier = Modifier.weight(1f), 
-            factory = { context -> 
-                WebView(context).apply { 
-                    settings.javaScriptEnabled = true
-                    webViewClient = WebViewClient()
-                    loadUrl("https://www.google.com")
-                    webView = this
-                } 
-            }
-        )
-        Button(
-            onClick = { 
-                webView?.url?.let { currentUrl ->
-                    onUrlDetected(currentUrl)
-                }
-            }, 
-            modifier = Modifier.fillMaxWidth().padding(16.dp).height(56.dp), 
-            colors = ButtonDefaults.buttonColors(containerColor = TikTokPink), 
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("CAPTURAR Y DESCARGAR", fontWeight = FontWeight.Black)
-        }
-    }
-}
-
-@Composable
-fun SocialBubbles(currentUrl: String) {
-    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-        SocialBubble("TikTok", TikTokCyan, currentUrl.contains("tiktok"))
-        SocialBubble("Instagram", TikTokPink, currentUrl.contains("instagram"))
-    }
-}
-
-@Composable
-fun SocialBubble(label: String, color: Color, isActive: Boolean) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.size(46.dp).background(color.copy(alpha = if (isActive) 0.2f else 0.05f), CircleShape).border(1.dp, color.copy(alpha = if (isActive) 1f else 0.2f), CircleShape), contentAlignment = Alignment.Center) {
-            Text(label.take(1), color = color, fontWeight = FontWeight.Bold)
-        }
-        Text(label, color = color.copy(alpha = if (isActive) 1f else 0.4f), fontSize = 10.sp, modifier = Modifier.padding(top = 4.dp))
     }
 }
 
@@ -156,14 +101,14 @@ fun HistorySection(history: List<VideoData>, onItemClick: (VideoData) -> Unit, o
     val haptic = LocalHapticFeedback.current
     Column(modifier = Modifier.fillMaxWidth().animateContentSize()) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("HISTORIAL DE DESCARGAS", color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
-            TextButton(onClick = onClearHistory) { Text("LIMPIAR TODO", color = TikTokPink, fontSize = 10.sp, fontWeight = FontWeight.Bold) }
+            Text("HISTORIAL", color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
+            TextButton(onClick = onClearHistory) { Text("BORRAR", color = TikTokPink, fontSize = 10.sp, fontWeight = FontWeight.Bold) }
         }
         LazyRow(contentPadding = PaddingValues(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             items(history) { video ->
-                Box(modifier = Modifier.size(height = 110.dp, width = 85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF0F0F0F)).border(1.dp, when(video.source) { "TikTok" -> TikTokCyan.copy(alpha = 0.3f); "Instagram" -> TikTokPink.copy(alpha = 0.3f); else -> Color.White.copy(alpha = 0.1f) }, RoundedCornerShape(16.dp)).clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onItemClick(video) }) {
+                Box(modifier = Modifier.size(height = 110.dp, width = 85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFF0F0F0F)).border(1.dp, TikTokCyan.copy(alpha = 0.3f), RoundedCornerShape(16.dp)).clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onItemClick(video) }) {
                     AsyncImage(model = video.coverUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop, alpha = 0.7f)
-                    Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)))).padding(vertical = 4.dp), contentAlignment = Alignment.Center) { Text(video.source.uppercase(), color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Black) }
+                    Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)))).padding(vertical = 4.dp), contentAlignment = Alignment.Center) { Text("TIKTOK", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Black) }
                     Box(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(18.dp).background(Color.Black.copy(alpha = 0.6f), CircleShape).clickable { onRemoveItem(video) }, contentAlignment = Alignment.Center) { Icon(Icons.Default.Close, null, tint = Color.White, modifier = Modifier.size(10.dp)) }
                 }
             }
@@ -180,7 +125,7 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = Modifier.size(260.dp).padding(10.dp)) {
-            Box(modifier = Modifier.fillMaxSize().border(2.dp, Brush.linearGradient(listOf(TikTokCyan, TikTokPink)), RoundedCornerShape(20.dp)))
+            Box(modifier = Modifier.fillMaxSize().border(2.dp, TikTokCyan, RoundedCornerShape(20.dp)))
             if (videoFile != null && videoFile.exists()) { 
                 VideoPlayer(videoPath = videoFile.absolutePath, modifier = Modifier.padding(6.dp)) 
             } else { 
@@ -188,10 +133,9 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Text("¡DESCARGA EXITOSA!", color = TikTokCyan, fontWeight = FontWeight.Black, fontSize = 18.sp)
+        Text("¡VIDEO DESCARGADO!", color = TikTokCyan, fontWeight = FontWeight.Black, fontSize = 18.sp)
         Text(videoData.title, color = Color.Gray, fontSize = 11.sp, maxLines = 1, modifier = Modifier.padding(horizontal = 20.dp))
         
-        // Sección de Autor Cyberpunk
         if (videoData.authorName.isNotEmpty()) {
             Spacer(modifier = Modifier.height(24.dp))
             AuthorCard(videoData)
@@ -199,7 +143,7 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
 
         Spacer(modifier = Modifier.height(30.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = onReturn, modifier = Modifier.weight(1f).height(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A1A1A)), shape = RoundedCornerShape(12.dp)) { Text("NUEVO") }
+            Button(onClick = onReturn, modifier = Modifier.weight(1f).height(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A1A1A)), shape = RoundedCornerShape(12.dp)) { Text("VOLVER") }
             Button(
                 onClick = { 
                     if (videoFile != null) { 
@@ -218,7 +162,7 @@ fun TransferSuccessView(videoData: VideoData, onReturn: () -> Unit) {
             ) { 
                 Icon(Icons.Default.Share, null)
                 Spacer(Modifier.width(8.dp))
-                Text("ENVIAR") 
+                Text("COMPARTIR") 
             }
         }
     }
@@ -237,54 +181,23 @@ fun AuthorCard(videoData: VideoData) {
             .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
             .clickable {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://www.tiktok.com/@${videoData.authorName}"))
+                val profileUrl = "https://www.tiktok.com/@${videoData.authorName}"
+                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(profileUrl))
                 context.startActivity(intent)
             }
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Avatar con efecto neón
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(2.dp, TikTokCyan, CircleShape)
-                    .padding(2.dp)
-                    .clip(CircleShape)
-            ) {
-                AsyncImage(
-                    model = videoData.authorAvatar,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+            Box(modifier = Modifier.size(50.dp).border(2.dp, TikTokCyan, CircleShape).padding(2.dp).clip(CircleShape)) {
+                AsyncImage(model = videoData.authorAvatar, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
             }
-            
             Spacer(modifier = Modifier.width(16.dp))
-            
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = videoData.authorNickname.ifEmpty { "Creador" },
-                    color = Color.White,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "@${videoData.authorName}",
-                    color = TikTokCyan,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                Text(text = videoData.authorNickname.ifEmpty { "Creador" }, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                Text(text = "@${videoData.authorName}", color = TikTokCyan, fontSize = 12.sp, fontWeight = FontWeight.Medium)
             }
-            
-            // Botón Explorar
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(TikTokCyan.copy(alpha = 0.1f))
-                    .border(1.dp, TikTokCyan.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
-                    .padding(horizontal = 10.dp, vertical = 6.dp)
-            ) {
-                Text("VER MÁS", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
+            Box(modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(TikTokCyan.copy(alpha = 0.1f)).border(1.dp, TikTokCyan.copy(alpha = 0.5f), RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 6.dp)) {
+                Text("PERFIL", color = TikTokCyan, fontSize = 10.sp, fontWeight = FontWeight.Black)
             }
         }
     }

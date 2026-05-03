@@ -102,11 +102,7 @@ fun InteractiveDownloadPopup(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val sourceIcon = when {
-                        url.contains("tiktok") -> Icons.Default.Bolt
-                        url.contains("fb") || url.contains("facebook") -> Icons.Default.Public
-                        else -> Icons.Default.Download
-                    }
+                    val sourceIcon = Icons.Default.Bolt
                     Icon(sourceIcon, null, tint = TikTokCyan, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("TikDownloader", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Black)

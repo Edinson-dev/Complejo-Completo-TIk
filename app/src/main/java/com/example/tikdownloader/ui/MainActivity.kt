@@ -82,10 +82,7 @@ class MainActivity : ComponentActivity() {
                         val item = clipboard.primaryClip?.getItemAt(0)
                         val pasteData = item?.text?.toString() ?: ""
                         
-                        val isValidUrl = pasteData.contains("tiktok.com") || 
-                                        pasteData.contains("instagram.com") || 
-                                        pasteData.contains("facebook.com") || 
-                                        pasteData.contains("fb.watch")
+                        val isValidUrl = pasteData.contains("tiktok.com")
 
                         if (isValidUrl && pasteData != lastProcessedUrl) {
                             lastProcessedUrl = pasteData
@@ -168,8 +165,6 @@ class MainActivity : ComponentActivity() {
                                         }
                                         else -> {
                                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                                // Se eliminó el botón del Navegador Inteligente
-
                                                 InteractiveMainCard(
                                                     urlText = urlText,
                                                     onUrlChange = { urlText = it },
@@ -177,15 +172,14 @@ class MainActivity : ComponentActivity() {
                                                     onDownload = {
                                                         if (urlText.isNotBlank()) {
                                                             viewModel.extractAndDownload(urlText)
+                                                            lastProcessedUrl = urlText
                                                             urlText = ""
                                                         }
                                                     }
                                                 )
 
                                                 Spacer(modifier = Modifier.height(30.dp))
-                                                SocialBubbles(urlText)
                                                 
-                                                Spacer(modifier = Modifier.height(24.dp))
                                                 CyberStatsPanel(
                                                     totalSavedMB = totalSavedMB,
                                                     totalDownloads = totalDownloads,

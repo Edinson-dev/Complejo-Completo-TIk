@@ -35,14 +35,14 @@ import com.example.tikdownloader.viewmodel.UpdateInfo
 @Composable
 fun FuturisticHeader() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.size(80.dp).background(Color.Black, CircleShape).border(2.dp, Color.Red, CircleShape).padding(4.dp), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.size(80.dp).background(Color.Black, CircleShape).border(2.dp, TikTokCyan, CircleShape).padding(4.dp), contentAlignment = Alignment.Center) {
             Icon(Icons.Default.DownloadForOffline, null, tint = Color.White, modifier = Modifier.size(42.dp))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Bolt, null, tint = Color.Red, modifier = Modifier.size(28.dp))
+            Icon(Icons.Default.Bolt, null, tint = TikTokCyan, modifier = Modifier.size(28.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("TIK", fontWeight = FontWeight.Black, fontSize = 32.sp, color = Color.Red, letterSpacing = 2.sp)
+            Text("TIK", fontWeight = FontWeight.Black, fontSize = 32.sp, color = TikTokCyan, letterSpacing = 2.sp)
             Text("DOWNLOADER", fontWeight = FontWeight.Light, fontSize = 32.sp, color = Color.White, letterSpacing = 1.sp)
         }
         Text("by edinson_dev • todos los derechos reservados", color = Color.Gray, fontSize = 10.sp, fontWeight = FontWeight.Normal, letterSpacing = 0.5.sp)
@@ -92,7 +92,9 @@ fun RadarScanner() {
 fun CyberTerminal(state: com.example.tikdownloader.viewmodel.DownloadState) {
     val message = when(state) {
         is com.example.tikdownloader.viewmodel.DownloadState.Extracting -> "EXTRAYENDO METADATOS..."
-        is com.example.tikdownloader.viewmodel.DownloadState.Downloading -> "INICIANDO TRANSFERENCIA..."
+        is com.example.tikdownloader.viewmodel.DownloadState.Downloading -> "TRANSFERENCIA EN CURSO..."
+        is com.example.tikdownloader.viewmodel.DownloadState.Success -> "SISTEMA SINCRONIZADO."
+        is com.example.tikdownloader.viewmodel.DownloadState.Error -> "FALLO EN EL NÚCLEO."
         else -> "STAND BY..."
     }
     

@@ -39,11 +39,7 @@ class ClipboardMonitorService : Service() {
     }
 
     private fun isValidUrl(text: String): Boolean {
-        return text.contains("tiktok.com") || 
-               text.contains("instagram.com") || 
-               text.contains("facebook.com") || 
-               text.contains("fb.watch") ||
-               text.contains("fb.com")
+        return text.contains("tiktok.com")
     }
 
     private fun processDownload(url: String) {
